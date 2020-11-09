@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.hoffnungland</groupId>
+  <artifactId>JTunneling</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+
+  <name>JTunneling</name>
+	<prerequisites>
+		<maven>3.0.5</maven>
+	</prerequisites>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.source.version>1.8</java.source.version>
+		<java.target.version>1.8</java.target.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.hoffnungland</groupId>
+			<artifactId>Log4j</artifactId>
+			<version>1.0.7</version>
+		</dependency>
+	</dependencies>
+</project>
