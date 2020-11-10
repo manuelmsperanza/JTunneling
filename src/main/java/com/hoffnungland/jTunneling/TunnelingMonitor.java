@@ -47,4 +47,12 @@ public class TunnelingMonitor implements Runnable {
 
 	}
 
+	public void closeAll() {
+		logger.traceEntry();
+		for(PortForwarding curTunnelling : this.listTunnels.values()) {
+			curTunnelling.disconnect();
+		}
+		logger.traceExit();		
+	}
+
 }

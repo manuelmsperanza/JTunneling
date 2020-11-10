@@ -4,14 +4,28 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableEntryException;
+import java.security.cert.CertificateException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Properties;
 
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,9 +43,11 @@ public class PortForwarding implements ActionListener {
 	private static final int emojiCrossMark = 0x274C; //cross mark
 
 	private JFrame winFrame;
+	private KeyStore ks;
 	private Session session;
 	private String host;
 	private String user;
+	private String passwordType;
 	private String password;
 	private String[] lportArray;
 	private String[] rhostArray;
@@ -42,11 +58,6 @@ public class PortForwarding implements ActionListener {
 	private TunnelingMonitor tunnelingMonitor;
 	private String name;
 
-	public PortForwarding(JFrame winFrame) {
-		super();
-		this.winFrame = winFrame;
-	}
-
 	public JLabel getTunnelLabel() {
 		return tunnelLabel;
 	}
@@ -55,13 +66,38 @@ public class PortForwarding implements ActionListener {
 		return statusButton;
 	}
 
-	public void init(String name, Properties tunnelsProperties, TunnelingMonitor tunnelingMonitor) {
+	public void init(String name, File propertyFile, App app, String passwordKs) throws NoSuchAlgorithmException, InvalidKeySpecException, KeyStoreException, CertificateException, IOException {
 		logger.traceEntry();
+		
+		Properties tunnelsProperties = new Properties();
+		try (FileInputStream configFile = new FileInputStream(propertyFile)) {
+			tunnelsProperties.load(configFile);
+		}
+		
 		this.name = name;
-		this.tunnelingMonitor = tunnelingMonitor; 
+		this.ks = app.getKs();
+		this.tunnelingMonitor = app.getTunnelingMonitor();
+		this.winFrame = app.getFrmTunneling();
+		
 		this.host = tunnelsProperties.getProperty("host");
 		this.user = tunnelsProperties.getProperty("user");
-		this.password = tunnelsProperties.getProperty("password");
+		this.passwordType = tunnelsProperties.getProperty("passwordType");
+		
+		if("encrypt".equals(this.passwordType)) {
+			
+			this.password = RandomStringUtils.randomAlphanumeric(12);
+			this.passwordType = "encrypted";
+			writePasswordToKeyStore(this.ks, app.getKeyStorePath(), passwordKs, this.password, this.name + ".password", tunnelsProperties.getProperty("password"));
+			tunnelsProperties.setProperty("passwordType", this.passwordType);
+			tunnelsProperties.setProperty("password", this.password);
+			
+			try(FileOutputStream out = new FileOutputStream(propertyFile)) {			
+				tunnelsProperties.store(out, "---No Comment---");
+			}
+			
+		} else {
+			this.password = tunnelsProperties.getProperty("password");
+		}
 
 		this.lportArray = tunnelsProperties.getProperty("lport").split(",");
 		this.rhostArray = tunnelsProperties.getProperty("rhost").split(",");
@@ -118,14 +154,28 @@ public class PortForwarding implements ActionListener {
 			
 			this.statusButton.setEnabled(false);
 			
+			this.session = PortForwarding.jsch.getSession(this.user, this.host, 22);
 			java.util.Properties config = new java.util.Properties(); 
 			config.put("StrictHostKeyChecking", "no");
-
-			this.session = PortForwarding.jsch.getSession(user, host, 22);
-
 			this.session.setConfig(config);
-
-			this.session.setPassword(password);
+			
+			switch(this.passwordType) {
+			case "encrypted":
+				
+				this.session.setPassword(readPasswordFromKeyStore(this.ks, this.password, this.name + ".password"));
+				break;
+			case "oneTimePassword":
+				PasswordPanel passwordPanel = new PasswordPanel();
+				int option = JOptionPane.showOptionDialog(this.winFrame, passwordPanel, this.name, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+				if(option == JOptionPane.OK_OPTION) { // pressing OK button
+				    char[] passwd = passwordPanel.getPasswordField().getPassword();
+				    this.session.setPassword(new String(passwd));
+				} else {
+					logger.traceExit();
+					return;
+				}
+				break;
+			}
 			logger.info("Connect");
 			this.session.connect();
 			this.session.setServerAliveInterval(1000);
@@ -142,7 +192,7 @@ public class PortForwarding implements ActionListener {
 			this.tunnelingMonitor.getListTunnels().put(this.name, this);
 			this.statusButton.setText(new String(Character.toChars(PortForwarding.emojiCheckMark)));
 
-		} catch (JSchException e) {
+		} catch (JSchException | NoSuchAlgorithmException | UnrecoverableEntryException | KeyStoreException | InvalidKeySpecException e) {
 			logger.error(e);
 			JOptionPane.showMessageDialog(this.winFrame, e.getMessage(), this.name + " exception", JOptionPane.ERROR_MESSAGE);
 		} finally {
@@ -159,7 +209,7 @@ public class PortForwarding implements ActionListener {
 		
 		new Thread((new Runnable() {
 			public void run() {
-				if(session == null) {
+				if(session == null || !session.isConnected()) {
 					connect();
 				} else {
 					disconnect();
@@ -169,5 +219,33 @@ public class PortForwarding implements ActionListener {
 		})).start();
 		logger.traceExit();
 	}
+	
+	private static String readPasswordFromKeyStore(KeyStore keyStore, String passwordPassword, String passwordAlias) throws NoSuchAlgorithmException, UnrecoverableEntryException, KeyStoreException, InvalidKeySpecException{
 
+        KeyStore.PasswordProtection keyStorePP = new KeyStore.PasswordProtection(passwordPassword.toCharArray());
+
+        KeyStore.SecretKeyEntry ske = (KeyStore.SecretKeyEntry)keyStore.getEntry(passwordAlias, keyStorePP);
+        if(ske == null) {
+        	System.err.println("Password for " + passwordAlias + " does not exist");
+        	return null;
+        }
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBE");
+        PBEKeySpec keySpec = (PBEKeySpec)factory.getKeySpec(ske.getSecretKey(), PBEKeySpec.class);
+
+        return new String(keySpec.getPassword());
+    }
+	
+	private static void writePasswordToKeyStore(KeyStore keyStore, String keyStorePath, String keyStorePassword, String passwordPassword, String alias, String password) throws NoSuchAlgorithmException, InvalidKeySpecException, KeyStoreException, CertificateException, IOException{
+
+        KeyStore.PasswordProtection keyStorePP = new KeyStore.PasswordProtection(passwordPassword.toCharArray());
+
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBE");
+        SecretKey generatedSecret = factory.generateSecret(new PBEKeySpec(password.toCharArray(), RandomStringUtils.randomAlphanumeric(24).getBytes(), 13));
+
+        keyStore.setEntry(alias, new KeyStore.SecretKeyEntry(generatedSecret), keyStorePP);
+
+        FileOutputStream outputStream = new FileOutputStream(new File(keyStorePath));
+        keyStore.store(outputStream, keyStorePassword.toCharArray());
+    }
+	
 }
