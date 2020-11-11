@@ -74,6 +74,11 @@
 					<artifactId>maven-enforcer-plugin</artifactId>
 					<version>3.0.0-M2</version>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+	        		<artifactId>maven-jarsigner-plugin</artifactId>
+	        		<version>3.0.0</version>
+        		</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -103,7 +108,7 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.6.0</version>
-				<!-- <configuration> <async>true</async> <mainClass>com.hoffnungland.circe.App</mainClass> 
+				<!-- <configuration> <async>true</async> <mainClass>com.hoffnungland.jTunneling.App</mainClass> 
 					</configuration> -->
 			</plugin>
 			<plugin>
@@ -128,6 +133,32 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+        		<artifactId>maven-jarsigner-plugin</artifactId>
+		        <executions>
+		        	<execution>
+		            	<id>sign</id>
+		            	<goals>
+		              		<goal>sign</goal>
+		            	</goals>
+		            	<configuration>
+          					<keystore>${hoffnunglandJksPath}</keystore>
+          					<alias>${hoffnunglandJksEntry}</alias>
+          					<storepass>${hoffnunglandJksPasswd}</storepass>
+		            	</configuration>
+		          	</execution>
+		          	<execution>
+		            	<id>verify</id>
+		            	<goals>
+		              		<goal>verify</goal>
+		            	</goals>
+		            	<configuration>
+		            		<verbose>true</verbose>
+		            		<certs>true</certs>
+		            	</configuration>
+		          	</execution>
+		        </executions>
+      		</plugin>
 		</plugins>
 		<resources>
 			<resource>
