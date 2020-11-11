@@ -14,6 +14,8 @@ import org.apache.logging.log4j.Logger;
 import com.jcraft.jsch.Session;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+
 import javax.swing.JPanel;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -136,7 +138,10 @@ public class App {
 				}
 			});
 			this.frmTunneling.setTitle("Tunneling");
-			this.frmTunneling.setBounds(100, 100, 450, 300);
+			Dimension standardSize = new Dimension(300, 450);
+			this.frmTunneling.setBounds(100, 100, 300, 450);
+			this.frmTunneling.setMinimumSize(standardSize);
+			
 			this.frmTunneling.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 			this.scrollPane = new JScrollPane();
