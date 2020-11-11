@@ -23,13 +23,7 @@
 		</RollingFile>
 	</Appenders>
 	<Loggers>
-		<Logger name="com.hoffnungland.jTunneling.App" level="${activeLevel}" additivity="false">
-			<AppenderRef ref="${activeProfile}"/>
-		</Logger>
-		<Logger name="com.hoffnungland.jTunneling.PortForwarding" level="${activeLevel}" additivity="false">
-			<AppenderRef ref="${activeProfile}"/>
-		</Logger>
-		<Logger name="com.hoffnungland.jTunneling.TunnelingMonitor" level="${activeLevel}" additivity="false">
+		<Logger name="com.hoffnungland" level="${activeLevel}" additivity="false">
 			<AppenderRef ref="${activeProfile}"/>
 		</Logger>
 		<Root level="error">
