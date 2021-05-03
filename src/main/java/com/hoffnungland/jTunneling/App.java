@@ -11,6 +11,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.hoffnungland.jAppKs.AppKeyStoreManager;
 import com.jcraft.jsch.Session;
 
 import java.awt.BorderLayout;
@@ -46,21 +47,12 @@ public class App {
 	private JScrollPane scrollPane;
 	private JPanel panel;
 
-	private KeyStore ks;
-	private String keyStorePath;
+	private AppKeyStoreManager appKsManager;
 	private Thread tunnelingMonitorThread;
 	private TunnelingMonitor tunnelingMonitor;
 	
 	public JFrame getFrmTunneling() {
 		return frmTunneling;
-	}
-
-	public KeyStore getKs() {
-		return ks;
-	}
-	
-	public String getKeyStorePath() {
-		return keyStorePath;
 	}
 
 	public TunnelingMonitor getTunnelingMonitor() {
@@ -123,13 +115,11 @@ public class App {
 		logger.traceEntry();
 
 		try {
-			this.ks = KeyStore.getInstance("pkcs12");
 			
-			this.keyStorePath = System.getProperty("user.home") + fileSeparator + "OneDrive"+ fileSeparator + "JTunnelingKStore.jks";
-			try (FileInputStream fis = new FileInputStream(keyStorePath)) {
-				this.ks.load(fis, passwordKs.toCharArray());
-			}
-			
+			String keyStorePath = System.getProperty("user.home") + fileSeparator + "OneDrive"+ fileSeparator + "JTunnelingKStore.jks";
+			this.appKsManager = new AppKeyStoreManager(keyStorePath, passwordKs);
+			this.appKsManager.init();
+
 			this.frmTunneling = new JFrame();
 			frmTunneling.addWindowListener(new WindowAdapter() {
 				@Override
@@ -171,7 +161,7 @@ public class App {
 					String tunnnelingName = curPropFile.getName().substring(0, curPropFile.getName().indexOf(".properties"));
 					PortForwarding portForwarding = new PortForwarding();
 
-					portForwarding.init(tunnnelingName, curPropFile, this, passwordKs);
+					portForwarding.init(tunnnelingName, curPropFile, this, this.appKsManager);
 
 					GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
 					gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);

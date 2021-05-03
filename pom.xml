@@ -184,6 +184,11 @@
 			<artifactId>Log4j</artifactId>
 			<version>1.0.8</version>
 		</dependency>
+		<dependency>
+			<groupId>com.hoffnungland</groupId>
+			<artifactId>JAppKeyStoreManager</artifactId>
+			<version>1.0.1</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
 		<dependency>
 		    <groupId>com.jcraft</groupId>

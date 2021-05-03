@@ -29,6 +29,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.hoffnungland.jAppKs.AppKeyStoreManager;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
@@ -43,7 +44,9 @@ public class PortForwarding implements ActionListener {
 	private static final int emojiCrossMark = 0x274C; //cross mark
 
 	private JFrame winFrame;
-	private KeyStore ks;
+	
+	private AppKeyStoreManager appKsManager;
+	
 	private Session session;
 	private String host;
 	private String user;
@@ -66,7 +69,7 @@ public class PortForwarding implements ActionListener {
 		return statusButton;
 	}
 
-	public void init(String name, File propertyFile, App app, String passwordKs) throws NoSuchAlgorithmException, InvalidKeySpecException, KeyStoreException, CertificateException, IOException {
+	public void init(String name, File propertyFile, App app, AppKeyStoreManager appKsManager) throws NoSuchAlgorithmException, InvalidKeySpecException, KeyStoreException, CertificateException, IOException {
 		logger.traceEntry();
 		
 		Properties tunnelsProperties = new Properties();
@@ -75,7 +78,7 @@ public class PortForwarding implements ActionListener {
 		}
 		
 		this.name = name;
-		this.ks = app.getKs();
+		this.appKsManager = appKsManager;
 		this.tunnelingMonitor = app.getTunnelingMonitor();
 		this.winFrame = app.getFrmTunneling();
 		
@@ -85,9 +88,9 @@ public class PortForwarding implements ActionListener {
 		
 		if("encrypt".equals(this.passwordType)) {
 			
-			this.password = RandomStringUtils.randomAlphanumeric(12);
 			this.passwordType = "encrypted";
-			writePasswordToKeyStore(this.ks, app.getKeyStorePath(), passwordKs, this.password, this.name + ".password", tunnelsProperties.getProperty("password"));
+			this.password = this.appKsManager.writePasswordToKeyStore(this.name + ".password", tunnelsProperties.getProperty("password"));
+			
 			tunnelsProperties.setProperty("passwordType", this.passwordType);
 			tunnelsProperties.setProperty("password", this.password);
 			
@@ -162,7 +165,9 @@ public class PortForwarding implements ActionListener {
 			switch(this.passwordType) {
 			case "encrypted":
 				
-				this.session.setPassword(readPasswordFromKeyStore(this.ks, this.password, this.name + ".password"));
+				String sessionPasswd = this.appKsManager.readPasswordFromKeyStore(this.name + ".password", this.password);
+				logger.info(sessionPasswd);
+				this.session.setPassword(sessionPasswd);
 				break;
 			case "oneTimePassword":
 				PasswordPanel passwordPanel = new PasswordPanel();
@@ -219,33 +224,4 @@ public class PortForwarding implements ActionListener {
 		})).start();
 		logger.traceExit();
 	}
-	
-	private static String readPasswordFromKeyStore(KeyStore keyStore, String passwordPassword, String passwordAlias) throws NoSuchAlgorithmException, UnrecoverableEntryException, KeyStoreException, InvalidKeySpecException{
-
-        KeyStore.PasswordProtection keyStorePP = new KeyStore.PasswordProtection(passwordPassword.toCharArray());
-
-        KeyStore.SecretKeyEntry ske = (KeyStore.SecretKeyEntry)keyStore.getEntry(passwordAlias, keyStorePP);
-        if(ske == null) {
-        	System.err.println("Password for " + passwordAlias + " does not exist");
-        	return null;
-        }
-        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBE");
-        PBEKeySpec keySpec = (PBEKeySpec)factory.getKeySpec(ske.getSecretKey(), PBEKeySpec.class);
-
-        return new String(keySpec.getPassword());
-    }
-	
-	private static void writePasswordToKeyStore(KeyStore keyStore, String keyStorePath, String keyStorePassword, String passwordPassword, String alias, String password) throws NoSuchAlgorithmException, InvalidKeySpecException, KeyStoreException, CertificateException, IOException{
-
-        KeyStore.PasswordProtection keyStorePP = new KeyStore.PasswordProtection(passwordPassword.toCharArray());
-
-        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBE");
-        SecretKey generatedSecret = factory.generateSecret(new PBEKeySpec(password.toCharArray(), RandomStringUtils.randomAlphanumeric(24).getBytes(), 13));
-
-        keyStore.setEntry(alias, new KeyStore.SecretKeyEntry(generatedSecret), keyStorePP);
-
-        FileOutputStream outputStream = new FileOutputStream(new File(keyStorePath));
-        keyStore.store(outputStream, keyStorePassword.toCharArray());
-    }
-	
 }
