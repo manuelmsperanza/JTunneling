@@ -43,3 +43,13 @@ Add log4j<br>
 #Run with Maven
 	
 	start mvn exec:java -Dexec.mainClass="com.hoffnungland.jTunneling.App" -Dlog4j.configurationFile=src/main/resources/log4j2.xml
+	
+#Tunnel Properties
+
+host=<target host>
+user=<target user>
+passwordType=[encrypt: encrypt the value and add the new entry to KeyStore |encrypted: password is stored and encrypted |oneTimePassword: password is not stored, you must enter it every time] 
+password=<target password when passwordType is encrypt or encrypted>
+lport=<comma separated value of local ports>
+rport=<comma separated value of remote host ports>
+rhost=<comma separated value of remote host name or ip>
