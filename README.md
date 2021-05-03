@@ -1,8 +1,6 @@
-# CIRCEExtractors
-
-
+# JTunneling
 #Create a new project
-mvn archetype:generate -Dfilter="org.apache.maven.archetypes:maven-archetype-quickstart" -DgroupId="com.hoffnungland" -DartifactId=JTunneling -Dpackage="com.hoffnungland.jTunneling" -Dversion="0.0.1-SNAPSHOT"
+	mvn archetype:generate -Dfilter="org.apache.maven.archetypes:maven-archetype-quickstart" -DgroupId="com.hoffnungland" -DartifactId=JTunneling -Dpackage="com.hoffnungland.jTunneling" -Dversion="0.0.1-SNAPSHOT"
 #Build settings
 ##Add prerequisites
 
@@ -26,7 +24,19 @@ Add log4j<br>
 		<dependency>
 			<groupId>com.hoffnungland</groupId>
 			<artifactId>Log4j</artifactId>
-			<version>1.0.7</version>
+			<version>1.0.8</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
+		<dependency>
+		    <groupId>com.jcraft</groupId>
+		    <artifactId>jsch</artifactId>
+		    <version>0.1.55</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.12.0</version>
 		</dependency>
 	</dependencies>
 
