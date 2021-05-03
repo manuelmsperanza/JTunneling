@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.hoffnungland.jAppKs.AppKeyStoreManager;
+import com.hoffnungland.jAppKs.PasswordPanel;
 import com.jcraft.jsch.Session;
 
 import java.awt.BorderLayout;
@@ -22,16 +23,11 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
