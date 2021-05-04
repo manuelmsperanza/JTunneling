@@ -48,7 +48,7 @@ Add log4j<br>
 
 * **host**=<target host>
 * **user**=<target user>
-* **passwordType**=[encrypt: encrypt the value and add the new entry to keyStore |encrypted: keystore entry password |oneTimePassword: password is not stored, you must enter it every time] 
+* **passwordType**=[encrypt: encrypt the value and add the new entry to keyStore |encrypted: keystore entry password |oneTimePassword: password is not stored, you must enter it every time you try to connect] 
 * **password**=<target password when passwordType is encrypt or keystore entry password when passwordType is encrypted>
 * **lport**=<comma separated value of local ports>
 * **rport**=<comma separated value of remote host ports>
