@@ -184,7 +184,7 @@
 		<dependency>
 			<groupId>com.hoffnungland</groupId>
 			<artifactId>Log4j</artifactId>
-			<version>1.0.8</version>
+			<version>1.0.9</version>
 		</dependency>
 		<dependency>
 			<groupId>com.hoffnungland</groupId>
