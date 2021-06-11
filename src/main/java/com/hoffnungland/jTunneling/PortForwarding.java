@@ -18,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -79,7 +80,7 @@ public class PortForwarding implements ActionListener {
 		this.user = tunnelsProperties.getProperty("user");
 		this.passwordType = tunnelsProperties.getProperty("passwordType");
 		
-		if("encrypt".equals(this.passwordType)) {
+		if(StringUtils.isBlank(passwordType) || "encrypt".equals(this.passwordType)) {
 			
 			this.passwordType = "encrypted";
 			this.password = this.appKsManager.writePasswordToKeyStore(this.name + ".password", tunnelsProperties.getProperty("password"));
@@ -91,8 +92,8 @@ public class PortForwarding implements ActionListener {
 				tunnelsProperties.store(out, "---No Comment---");
 			}
 			
-		} else {
-			this.password = tunnelsProperties.getProperty("password");
+		/*} else {
+			this.password = tunnelsProperties.getProperty("password");*/
 		}
 
 		this.lportArray = tunnelsProperties.getProperty("lport").split(",");
