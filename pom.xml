@@ -5,7 +5,7 @@
 
 	<groupId>com.hoffnungland</groupId>
 	<artifactId>jtunneling</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.1-SNAPSHOT</version>
 
 	<name>JTunneling</name>
 	<distributionManagement>
