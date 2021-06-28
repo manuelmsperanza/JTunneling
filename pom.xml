@@ -5,10 +5,26 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.hoffnungland</groupId>
-  <artifactId>JTunneling</artifactId>
+  <artifactId>jtunneling</artifactId>
   <version>0.0.1</version>
 
   <name>JTunneling</name>
+  <distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub manuelmsperanza Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/manuelmsperanza/JTunneling</url>
+		</repository>
+	</distributionManagement>
+	<scm>
+		<connection>scm:git:https://github.com/manuelmsperanza/JTunneling.git</connection>
+		<developerConnection>scm:git:git@github.com:manuelmsperanza/JTunneling.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/manuelmsperanza/JTunneling/issues</url>
+	</issueManagement>
 	<prerequisites>
 		<maven>3.0.5</maven>
 	</prerequisites>
@@ -183,12 +199,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.hoffnungland</groupId>
-			<artifactId>Log4j</artifactId>
+			<artifactId>log4j</artifactId>
 			<version>1.0.9</version>
 		</dependency>
 		<dependency>
 			<groupId>com.hoffnungland</groupId>
-			<artifactId>JAppKeyStoreManager</artifactId>
+			<artifactId>jappkeystoremanager</artifactId>
 			<version>1.0.1</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
