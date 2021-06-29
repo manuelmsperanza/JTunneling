@@ -5,12 +5,12 @@
 
 	<groupId>com.hoffnungland</groupId>
 	<artifactId>jtunneling</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.1</version>
 
 	<name>JTunneling</name>
 	<distributionManagement>
 		<repository>
-			<id>github</id>
+			<id>manuelmsperanza.github</id>
 			<name>GitHub manuelmsperanza Apache Maven Packages</name>
 			<url>https://maven.pkg.github.com/manuelmsperanza/JTunneling</url>
 		</repository>
@@ -19,7 +19,7 @@
 		<connection>scm:git:https://github.com/manuelmsperanza/JTunneling.git</connection>
 		<developerConnection>scm:git:git@github.com:manuelmsperanza/JTunneling.git</developerConnection>
 	  <tag>jtunneling-0.0.1</tag>
-  </scm>
+  	</scm>
 	<issueManagement>
 		<system>GitHub</system>
 		<url>https://github.com/manuelmsperanza/JTunneling/issues</url>
@@ -136,7 +136,7 @@
 				<executions>
 					<execution>
 						<id>create-executable-jar</id>
-						<phase>package</phase>
+						<phase>deploy</phase>
 						<goals>
 							<goal>single</goal>
 						</goals>
