@@ -136,7 +136,7 @@
 				<executions>
 					<execution>
 						<id>create-executable-jar</id>
-						<phase>deploy</phase>
+						<!-- phase>package</phase-->s
 						<goals>
 							<goal>single</goal>
 						</goals>
