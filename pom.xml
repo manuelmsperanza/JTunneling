@@ -133,27 +133,18 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>create-executable-jar</id>
-						<!-- phase>package</phase-->
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<descriptorRefs>
-								<descriptorRef>jar-with-dependencies</descriptorRef>
-							</descriptorRefs>
-							<appendAssemblyId>false</appendAssemblyId>
-							<finalName>${project.artifactId}</finalName>
-							<archive>
-								<manifest>
-									<mainClass>com.hoffnungland.jTunneling.App</mainClass>
-								</manifest>
-							</archive>
-						</configuration>
-					</execution>
-				</executions>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<appendAssemblyId>false</appendAssemblyId>
+					<finalName>${project.artifactId}</finalName>
+					<archive>
+						<manifest>
+							<mainClass>com.hoffnungland.jTunneling.App</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-jarsigner-plugin</artifactId>

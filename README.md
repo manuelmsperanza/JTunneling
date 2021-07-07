@@ -43,6 +43,30 @@ Add log4j<br>
 # Run with Maven
 	
 	start mvn exec:java -Dexec.mainClass="com.hoffnungland.jTunneling.App" -Dlog4j.configurationFile=src/main/resources/log4j2.xml
+
+# Create Jar with dependencies
+
+## Configure the pom.xml
+
+	<plugin>
+		<artifactId>maven-assembly-plugin</artifactId>
+		<configuration>
+			<descriptorRefs>
+				<descriptorRef>jar-with-dependencies</descriptorRef>
+			</descriptorRefs>
+			<appendAssemblyId>false</appendAssemblyId>
+			<finalName>${project.artifactId}</finalName>
+			<archive>
+				<manifest>
+					<mainClass>com.hoffnungland.jTunneling.App</mainClass>
+				</manifest>
+			</archive>
+		</configuration>
+	</plugin>
+
+## Execute the maven assembly single
+
+	mvn assembly:single
 	
 # Tunnel Properties
 
