@@ -25,7 +25,7 @@
 		<url>https://github.com/manuelmsperanza/JTunneling/issues</url>
 	</issueManagement>
 	<prerequisites>
-		<maven>3.0.5</maven>
+		<maven>3.1.0</maven>
 	</prerequisites>
 
 	<properties>
@@ -114,7 +114,7 @@
 						<configuration>
 							<rules>
 								<requireMavenVersion>
-									<version>3.0.5</version>
+									<version>3.1.0</version>
 								</requireMavenVersion>
 								<requireJavaVersion>
 									<version>1.8.0</version>
@@ -127,7 +127,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.6.0</version>
+				<version>3.0.0</version>
 				<!-- <configuration> <async>true</async> <mainClass>com.hoffnungland.jTunneling.App</mainClass> 
 					</configuration> -->
 			</plugin>
@@ -195,12 +195,12 @@
 		<dependency>
 			<groupId>com.hoffnungland</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.0.9</version>
+			<version>1.0.10</version>
 		</dependency>
 		<dependency>
 			<groupId>com.hoffnungland</groupId>
 			<artifactId>jappkeystoremanager</artifactId>
-			<version>1.0.1</version>
+			<version>1.0.2</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
 		<dependency>
