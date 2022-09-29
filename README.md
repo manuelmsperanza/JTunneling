@@ -109,3 +109,16 @@ keytool -genkeypair -keysize 2048 -keyalg RSA -alias <name.surname> -keystore ~/
 _Different store and key passwords not supported for PKCS12 KeyStores_
 
 	keytool -genkeypair -keysize 2048 -keyalg RSA -alias <name.surname> -keystore ~/OneDrive/JTunnelingKStore.jks -dname "CN=<name.surname>, OU=NA, O=NA, L=<city or locality>, ST=<state or province>, C=<country code>" -validity 365 -storepass <your keystore password>
+	
+# add .gitignore to mandatory empty directory
+
+	# Ignore everything in this directory
+	*
+	# Except this file
+	!.gitignore
+
+# Configure the Package Clean UP Automation with GitHub Action
+
+The Action run during the release phase of package (or you can run it manually).
+Leave only the latest package version into the repository.
+Create the .github/workflows/cleanupPackages.yml file.
