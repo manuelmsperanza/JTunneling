@@ -5,7 +5,7 @@
 
 	<groupId>com.hoffnungland</groupId>
 	<artifactId>jtunneling</artifactId>
-	<version>0.0.8</version>
+	<version>0.0.9-SNAPSHOT</version>
 
 	<name>JTunneling</name>
 	<distributionManagement>
@@ -18,7 +18,7 @@
 	<scm>
 		<connection>scm:git:https://github.com/manuelmsperanza/JTunneling.git</connection>
 		<developerConnection>scm:git:git@github.com:manuelmsperanza/JTunneling.git</developerConnection>
-	  <tag>jtunneling-0.0.8</tag>
+	  <tag>jtunneling-0.0.4</tag>
   	</scm>
 	<issueManagement>
 		<system>GitHub</system>
