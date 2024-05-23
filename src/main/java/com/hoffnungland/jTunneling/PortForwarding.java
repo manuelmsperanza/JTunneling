@@ -46,6 +46,7 @@ public class PortForwarding implements ActionListener {
 	private String user;
 	private String passwordType;
 	private String password;
+	private int port;
 	private String[] lportArray;
 	private String[] rhostArray;
 	private String[] rportArray;
@@ -78,6 +79,7 @@ public class PortForwarding implements ActionListener {
 		
 		this.host = tunnelsProperties.getProperty("host");
 		this.user = tunnelsProperties.getProperty("user");
+		this.port = Integer.valueOf(tunnelsProperties.getProperty("port", "22")).intValue();
 		this.passwordType = tunnelsProperties.getProperty("passwordType");
 		
 		if(StringUtils.isBlank(passwordType) || "encrypt".equals(this.passwordType)) {
@@ -151,7 +153,7 @@ public class PortForwarding implements ActionListener {
 			
 			this.statusButton.setEnabled(false);
 			
-			this.session = PortForwarding.jsch.getSession(this.user, this.host, 22);
+			this.session = PortForwarding.jsch.getSession(this.user, this.host, this.port);
 			java.util.Properties config = new java.util.Properties(); 
 			config.put("StrictHostKeyChecking", "no");
 			this.session.setConfig(config);
