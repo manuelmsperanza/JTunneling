@@ -162,7 +162,7 @@ public class PortForwarding implements ActionListener {
 			case "encrypted":
 				
 				String sessionPasswd = this.appKsManager.readPasswordFromKeyStore(this.name + ".password", this.password);
-				logger.info(sessionPasswd);
+				//logger.info(sessionPasswd);
 				this.session.setPassword(sessionPasswd);
 				break;
 			case "oneTimePassword":
