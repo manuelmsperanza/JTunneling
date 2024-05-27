@@ -94,8 +94,8 @@ public class PortForwarding implements ActionListener {
 				tunnelsProperties.store(out, "---No Comment---");
 			}
 			
-		/*} else {
-			this.password = tunnelsProperties.getProperty("password");*/
+		} else if("encrypted".equals(this.passwordType)) {
+			this.password = tunnelsProperties.getProperty("password");
 		}
 
 		this.lportArray = tunnelsProperties.getProperty("lport").split(",");
@@ -162,7 +162,6 @@ public class PortForwarding implements ActionListener {
 			case "encrypted":
 				
 				String sessionPasswd = this.appKsManager.readPasswordFromKeyStore(this.name + ".password", this.password);
-				//logger.info(sessionPasswd);
 				this.session.setPassword(sessionPasswd);
 				break;
 			case "oneTimePassword":
