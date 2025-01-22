@@ -82,7 +82,7 @@ public class PortForwarding implements ActionListener {
 		this.port = Integer.valueOf(tunnelsProperties.getProperty("port", "22")).intValue();
 		this.passwordType = tunnelsProperties.getProperty("passwordType");
 		
-		if(StringUtils.isBlank(passwordType) || "encrypt".equals(this.passwordType)) {
+		if(StringUtils.isBlank(this.passwordType) || "encrypt".equals(this.passwordType)) {
 			
 			this.passwordType = "encrypted";
 			this.password = this.appKsManager.writePasswordToKeyStore(this.name + ".password", tunnelsProperties.getProperty("password"));
