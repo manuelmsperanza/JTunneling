@@ -18,56 +18,69 @@
 	<scm>
 		<connection>scm:git:https://github.com/manuelmsperanza/JTunneling.git</connection>
 		<developerConnection>scm:git:git@github.com:manuelmsperanza/JTunneling.git</developerConnection>
-	  <tag>jtunneling-0.0.17</tag>
-  	</scm>
+		<tag>jtunneling-0.0.17</tag>
+	</scm>
 	<issueManagement>
 		<system>GitHub</system>
 		<url>https://github.com/manuelmsperanza/JTunneling/issues</url>
 	</issueManagement>
 	<prerequisites>
-		<maven>3.1.0</maven>
+		<maven>3.9.0</maven>
 	</prerequisites>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.source.version>21</java.source.version>
-		<java.target.version>21</java.target.version>
+		<java.source.version>25</java.source.version>
+		<java.target.version>25</java.target.version>
+		<maven.compiler.release>25</maven.compiler.release>
+		<maven.compiler.parameters>true</maven.compiler.parameters>
+		<junit.version>5.13.0</junit.version>
 	</properties>
 	<build>
-		<pluginManagement><!-- lock down plugins versions to avoid using Maven 
-				defaults (may be moved to parent pom) -->
+		<pluginManagement>
 			<plugins>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
-			        <artifactId>maven-compiler-plugin</artifactId>
-			        <version>3.12.1</version>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.14.0</version>
 					<configuration>
 						<encoding>UTF-8</encoding>
 						<source>${java.source.version}</source>
 						<target>${java.target.version}</target>
+						<release>${maven.compiler.release}</release>
 					</configuration>
 				</plugin>
 				<plugin>
-    				<groupId>org.apache.maven.plugins</groupId>
-    				<artifactId>maven-release-plugin</artifactId>
-    				<version>3.0.0-M7</version>
-    				<configuration>
-      					<releaseProfiles>github</releaseProfiles>
-    				</configuration>
-  				</plugin>
-  				<plugin>
-    				<groupId>org.apache.maven.plugins</groupId>
-    				<artifactId>maven-enforcer-plugin</artifactId>
-    				<version>3.2.1</version>
-  				</plugin>
-  				<plugin>
-    				<groupId>org.apache.maven.plugins</groupId>
-    				<artifactId>maven-jarsigner-plugin</artifactId>
-    				<version>3.0.0</version>
-  				</plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>3.0.1</version>
+					<configuration>
+						<releaseProfiles>github</releaseProfiles>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-enforcer-plugin</artifactId>
+					<version>3.6.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jarsigner-plugin</artifactId>
+					<version>3.1.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>3.11.2</version>
+					<configuration>
+						<encoding>UTF-8</encoding>
+						<doclint>all,-missing</doclint>
+						<source>${java.source.version}</source>
+					</configuration>
+				</plugin>
 				<plugin>
 					<artifactId>maven-jar-plugin</artifactId>
-					<version>3.3.0</version>
+					<version>3.4.2</version>
 					<configuration>
 						<archive>
 							<manifest>
@@ -93,10 +106,10 @@
 						<configuration>
 							<rules>
 								<requireMavenVersion>
-									<version>3.2.5</version>
+									<version>[3.9.0,)</version>
 								</requireMavenVersion>
 								<requireJavaVersion>
-									<version>1.8.0</version>
+									<version>[25,)</version>
 								</requireJavaVersion>
 							</rules>
 						</configuration>
@@ -106,12 +119,11 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
-				<version>3.1.0</version>
-				<!-- <configuration> <async>true</async> <mainClass>com.hoffnungland.jTunneling.App</mainClass> 
-					</configuration> -->
+				<version>3.6.1</version>
 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.7.1</version>
 				<configuration>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
@@ -126,29 +138,14 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<artifactId>maven-jarsigner-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>sign</id>
+						<id>attach-javadocs</id>
 						<goals>
-							<goal>sign</goal>
+							<goal>jar</goal>
 						</goals>
-						<configuration>
-							<keystore>${hoffnunglandJksPath}</keystore>
-							<alias>${hoffnunglandJksEntry}</alias>
-							<storepass>${hoffnunglandJksPasswd}</storepass>
-							<keypass>${hoffnunglandKeyPasswd}</keypass>
-							<tsa>${hoffnunglandTsaUrl}</tsa>
-						</configuration>
-					</execution>
-					<execution>
-						<id>verify</id>
-						<goals>
-							<goal>verify</goal>
-						</goals>
-						<configuration>
-							<certs>true</certs>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -170,6 +167,42 @@
 			</resource>
 		</resources>
 	</build>
+	<profiles>
+		<profile>
+			<id>sign-artifacts</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-jarsigner-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>sign</id>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+								<configuration>
+									<keystore>${hoffnunglandJksPath}</keystore>
+									<alias>${hoffnunglandJksEntry}</alias>
+									<storepass>${hoffnunglandJksPasswd}</storepass>
+									<keypass>${hoffnunglandKeyPasswd}</keypass>
+									<tsa>${hoffnunglandTsaUrl}</tsa>
+								</configuration>
+							</execution>
+							<execution>
+								<id>verify</id>
+								<goals>
+									<goal>verify</goal>
+								</goals>
+								<configuration>
+									<certs>true</certs>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 	<dependencies>
 		<dependency>
 			<groupId>com.hoffnungland</groupId>
@@ -181,17 +214,21 @@
 			<artifactId>jappkeystoremanager</artifactId>
 			<version>1.0.18</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
 		<dependency>
 			<groupId>com.jcraft</groupId>
 			<artifactId>jsch</artifactId>
 			<version>0.1.55</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.19.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>
